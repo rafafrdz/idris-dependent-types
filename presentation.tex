@@ -1,0 +1,216 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{xspace}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,shapes,shadows,fit}
+\usepackage{graphics}
+\usepackage{xcolor}
+\usepackage[beamer]{hf-tikz}
+\usepackage{bussproofs}
+
+\usefonttheme{serif}
+
+%\usepackage{soul}
+%\makeatletter
+%\let\HL\hl
+%\renewcommand\hl{
+    %\let\set@color\beamerorig@set@color
+    %\let\reset@color\beamerorig@reset@color
+    %\HL}
+%\makeatother
+%\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2}}
+
+\usepackage{xcolor}
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+\definecolor{gray90}{gray}{.92}
+
+\usepackage{listings}
+\lstdefinestyle{CodigoC}
+{basicstyle=\tiny\ttfamily,
+	frame=single,
+	language=C,
+	numbers=left,
+	numbersep=6pt,
+	numberstyle=\tiny,
+	framexleftmargin=0.4cm,
+	backgroundcolor=\color{gray90},
+	keywordstyle=\bfseries
+}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\lstdefinestyle{plain-text}
+{
+	backgroundcolor=\color{white},
+	%basicstyle=\ttfamily\small,
+	basicstyle=\tiny\ttfamily,
+	numbers=none,
+	frame=single
+}
+\newcommand{\chcir}{CHC-IR }
+\newcommand{\bubble}{\texttt{bubble\_sort}\xspace}
+\usepackage{caption}
+\usepackage{subcaption}
+\AtBeginSection[]
+
+
+
+%% -----------------------------------------------
+
+\title[]{Idris, a general-purpose dependently typed programming language: Design and implementation}
+\author[]{}
+\institute[]{
+}
+\date{}
+%% -----------------------------------------------
+%% Documento:
+\begin{document}
+	\selectlanguage{english}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Table of Contents}
+		\tableofcontents
+	\end{frame}
+
+\newcommand{\intro}{Introduction}
+\section{\intro}
+\label{sec:intro}
+
+\begin{frame}
+	\frametitle{\intro}
+	\begin{itemize}
+		\setlength\itemsep{1em} 
+		\item<1-> Idris is a general purpose functional programming language
+		\item<2-> Influenced by Haskell
+		\begin{itemize}
+			\item<2-> Especially in the part of syntax and types.
+		\end{itemize}   
+		\item<3-> Has full dependent types
+			\begin{itemize}
+			\item<3-> Dependent types allow types to be predicated on values.
+		\end{itemize}   
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+		\frametitle{Dependent Types}
+\end{frame}
+
+\newcommand{\typetheory}{Type theory}
+\section{\typetheory}
+\label{sec:typetheory}
+
+\begin{frame}{\typetheory}
+    %\begin{block}{}
+    \begin{align*}
+        \text{Terms}, t ::= \quad & c & \text{(constant)} \\
+          | \quad & x & \text{(variable)} \\
+          | \quad & \lambda x : t.\ t & \text{(abstraction)} \\
+          | \quad & t\ t & \text{(application)} \\
+          | \quad & \tikzmarkin<2>{a} {(}x : t) \to t & \text{(function space)}  \\
+          | \quad & \texttt{T} & \text{(type constructor)} \tikzmarkend{a} \\
+          | \quad & \texttt{D} & \text{(data constructor)} \\
+    \end{align*}
+    \begin{align*}
+        \text{Constants}, c ::= \quad & \tikzmarkin<2>{b} \texttt{Type} & \text{(type universe)} \tikzmarkend{b} \\
+          | \quad & i & \text{(integer literal)} \\
+          | \quad & str & \text{(string literal)} \\
+    \end{align*}
+    %\end{block}
+\end{frame}
+
+\begin{frame}{\typetheory}
+    \begin{columns}
+        \column{0.4\textwidth}
+            \begin{prooftree}
+                \AxiomC{}
+                \RightLabel{Const$_1$}
+                \UnaryInfC{$\Gamma \vdash i : \texttt{Int}$}
+            \end{prooftree}
+        \column{0.4\textwidth}
+            \begin{prooftree}
+                \AxiomC{}
+                \RightLabel{Const$_2$}
+                \UnaryInfC{$\Gamma \vdash str : \texttt{String}$}
+            \end{prooftree}
+    \end{columns}
+
+    \begin{columns}
+        \column{0.4\textwidth}
+            \begin{prooftree}
+                \AxiomC{}
+                \RightLabel{Const$_3$}
+                \UnaryInfC{$\Gamma \vdash \texttt{Int} : \texttt{Type}$}
+            \end{prooftree}
+        \column{0.4\textwidth}
+            \begin{prooftree}
+                \AxiomC{}
+                \RightLabel{Const$_4$}
+                \UnaryInfC{$\Gamma \vdash \texttt{String} : \texttt{Type}$}
+            \end{prooftree}
+    \end{columns}
+
+    \pause
+
+    \begin{prooftree}
+        \AxiomC{$(x : S) \in \Gamma$}
+        \RightLabel{Var}
+        \UnaryInfC{$\Gamma \vdash x : S$}
+    \end{prooftree}
+
+    \pause
+
+    \begin{prooftree}
+        \AxiomC{$\Gamma \vdash f : (x : S) \to T$}
+        \AxiomC{$\Gamma \vdash s : S$}
+        \RightLabel{App}
+        \BinaryInfC{$\Gamma \vdash f\ s : T[s/x]$}
+    \end{prooftree}
+
+    \pause
+
+    %\begin{prooftree}
+        %\AxiomC{$\Gamma \vdash S : \texttt{Type}$}
+        %\AxiomC{$\Gamma; x : S \vdash T : \texttt{Type}$}
+        %\RightLabel{Forall}
+        %\BinaryInfC{$\Gamma \vdash (x : S) \to T : \texttt{Type}$}
+    %\end{prooftree}
+
+    %\begin{prooftree}
+        %\AxiomC{$\Gamma; x : S \vdash T : \texttt{Type}_m$}
+        %\AxiomC{$\Gamma \vdash S : \texttt{Type}_n$}
+        %\AxiomC{$\exists p.\ m\leq p \wedge n\leq p$}
+        %\TrinaryInfC{$\Gamma \vdash (x : S) \to T : \texttt{Type}_p$}
+    %\end{prooftree}
+
+    \begin{prooftree}
+        \AxiomC{$\Gamma; x : S \vdash e : T$}
+        \AxiomC{$\Gamma \vdash (x : S) \to T : \texttt{Type}$}
+        \RightLabel{Abs}
+        \BinaryInfC{$\Gamma \vdash \lambda x : S.\ e : (x : S) \to T$}
+    \end{prooftree}
+\end{frame}
+
+\begin{frame}{\typetheory}
+\end{frame}
+
+\begin{frame}{\typetheory}
+\end{frame}
+
+\begin{frame}{\typetheory}
+\end{frame}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
