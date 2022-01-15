@@ -59,26 +59,19 @@
 \usepackage{subcaption}
 \AtBeginSection[]
 
+\newcommand\Idris{\textsc{Idris}}
 
+\title{\Idris, a general-purpose dependently typed programming language: Design and implementation -- Edwin Brady}
+\author{Daniela Ferreiro, Jorge Blázquez, Rafael Fernández, Daniel Trujillo}
+\date{January 18, 2022}
 
-%% -----------------------------------------------
-
-\title[]{Idris, a general-purpose dependently typed programming language: Design and implementation}
-\author[]{}
-\institute[]{
-}
-\date{}
-%% -----------------------------------------------
-%% Documento:
 \begin{document}
-	\selectlanguage{english}
-	
-	\frame{\titlepage}
-	
-	\begin{frame}
-		\frametitle{Table of Contents}
-		\tableofcontents
-	\end{frame}
+
+\frame{\titlepage}
+
+\begin{frame}{Table of Contents}
+	\tableofcontents
+\end{frame}
 
 \newcommand{\intro}{Introduction}
 \section{\intro}
@@ -88,7 +81,7 @@
 	\frametitle{\intro}
 	\begin{itemize}
 		\setlength\itemsep{1em} 
-		\item<1-> Idris is a general purpose functional programming language
+		\item<1-> \Idris\ is a general purpose functional programming language
 		\item<2-> Influenced by Haskell
 		\begin{itemize}
 			\item<2-> Especially in the part of syntax and types.
@@ -108,7 +101,7 @@
 \section{\typetheory}
 \label{sec:typetheory}
 
-\begin{frame}{\typetheory}
+\begin{frame}{\typetheory: syntax}
     %\begin{block}{}
     \begin{align*}
         \text{Terms}, t ::= \quad & c & \text{(constant)} \\
@@ -127,7 +120,16 @@
     %\end{block}
 \end{frame}
 
-\begin{frame}{\typetheory}
+\newcommand\red{\rightsquigarrow_\beta}
+
+%\begin{frame}{\typetheory}
+%\end{frame}
+
+\begin{frame}{\typetheory: typing}
+    $$\Gamma \vdash (\lambda x : S.\ t)\ s \red t$$
+
+    \pause
+
     \begin{columns}
         \column{0.4\textwidth}
             \begin{prooftree}
@@ -199,13 +201,73 @@
     \end{prooftree}
 \end{frame}
 
-\begin{frame}{\typetheory}
+\newcommand\ttvar{\text{\underline{var}}}
+
+\begin{frame}{\typetheory: pattern matching definitions}
+
+    \begin{align*}
+        &\texttt{f} : t \\
+        &\ttvar\ \vec{x}_1 : \vec{t}_1.\ \texttt{f}\ \vec{t}_1 = t_1 \\
+        &\, \ \vdots \\
+        &\ttvar\ \vec{x}_n : \vec{t}_n.\ \texttt{f}\ \vec{t}_n = t_n \\
+    \end{align*}
+
+    \pause
+
+    \begin{align*}
+        &\texttt{add} : \texttt{Nat} \to \texttt{Nat} \to \texttt{Nat} \\
+        &\ttvar\ m : \texttt{Nat}.\ \quad \quad \quad \ \texttt{add}\ \texttt{Z}\ m = m \\
+        &\ttvar\ n : \texttt{Nat}, m : \texttt{Nat}.\ \texttt{add}\ (\texttt{S}\ n)\ m = \texttt{S}\ (\texttt{add}\ n\ m) \\
+    \end{align*}
+
 \end{frame}
 
-\begin{frame}{\typetheory}
+\begin{frame}{\typetheory: from \Idris\ to \textbf{TT}}
+    \includegraphics[width=\textwidth]{phases}
 \end{frame}
 
-\begin{frame}{\typetheory}
+\begin{frame}[fragile]{\typetheory: from \Idris\ to \textbf{TT}}
+    \begin{block}<only@1-2>{\Idris}
+        \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+vAdd : Num a => Vect n a -> Vect n a -> Vect n a
+vAdd Nil Nil = Nil
+vAdd (x :: xs) (y :: ys) = x + y :: vAdd xs ys
+        \end{lstlisting}
+    \end{block}
+    \vfill
+
+    \begin{block}<only@2->{\Idris$^-$}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+vAdd : (a : _) -> (n : _) ->
+       Num a -> Vect n a -> Vect n a -> Vect n a
+vAdd _ _ c (Nil _) (Nil _) = Nil _
+vAdd _ _ c ((::) _ _ x xs) ((::) _ _ y ys)
+                = (::) _ _ ((+) _ x y) (vAdd _ _ _ xs ys)
+    \end{lstlisting}
+    \end{block}
+
+    \vfill
+
+    \newcommand\vAdd{\texttt{vAdd}}
+    \newcommand\Type{\texttt{Type}}
+    \newcommand\Nat{\texttt{Nat}}
+    \newcommand\Num{\texttt{Num}}
+    \newcommand\Vect{\texttt{Vect}}
+    \newcommand\Nil{\texttt{Nil}}
+
+    \begin{block}<only@3->{\textbf{TT}}
+    \footnotesize{
+        \begin{align*}
+            & \vAdd : (a : \Type) \to (n : \Nat) \to \Num\ a \to \Vect\ n\ a \to \Vect\ n\ a \to \Vect\ n\ a \\
+            & \ttvar\ a : \Type, c : \Num\ a. \\
+            & \quad \tikzmarkin<4>{first}\vAdd\ a\ \texttt{Z}\ c\ (\Nil\ a)\ (\Nil\ a) = \Nil\ a \tikzmarkend{first} \\
+            & \ttvar\ a : \Type, k : \Nat, c : \Num\ a, \\
+            & \quad \quad x : a, xs : \Vect\ k\ a, y : a, ys : \Vect\ k\ a. \\
+            & \quad \tikzmarkin<5>{second}\vAdd\ a\ (\texttt{S}\ k)\ c\ ((::)\ a\ k\ x\ xs) ((::)\ a\ k\ y\ ys)\tikzmarkend{second} \\
+            & \quad \quad = ((::)\ a\ k\ ((+)\ c\ x\ y)\ (\vAdd\ a\ k\ c\ xs\ ys)) \\
+        \end{align*}
+    }
+    \end{block}
 \end{frame}
 
 \end{document}
