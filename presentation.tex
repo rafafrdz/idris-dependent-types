@@ -62,7 +62,7 @@
 \newcommand\Idris{\textsc{Idris}}
 
 \title{\Idris, a general-purpose dependently typed programming language: Design and implementation -- Edwin Brady}
-\author{Daniela Ferreiro, Jorge Blázquez, Daniel Trujillo, Rafael Fernández}
+\author{Daniela Ferreiro, Jorge Blázquez, Rafael Fernández, Daniel Trujillo}
 \date{January 18, 2022}
 
 \begin{document}
@@ -72,29 +72,145 @@
 \begin{frame}{Table of Contents}
 	\tableofcontents
 \end{frame}
-
 \newcommand{\intro}{Introduction}
 \section{\intro}
 \label{sec:intro}
 
 \begin{frame}
 	\frametitle{\intro}
+	\begin{figure}
+		\includegraphics[width=0.3\linewidth]{descarga.png}
+		\label{fig:boat1}
+	\end{figure}
 	\begin{itemize}
 		\setlength\itemsep{1em} 
-		\item<1-> \Idris\ is a general purpose functional programming language
-		\item<2-> Influenced by Haskell
+		\item Idris is a general purpose functional programming language
 		\begin{itemize}
-			\item<2-> Especially in the part of syntax and types.
+			\item Programs are composed of functions
+			\item Program execution consists of the evaluation of functions
+			\item Functions are a first-class language construct
+		\end{itemize}  
+		\item Influenced by Haskell
+		\begin{itemize}
+			\item Especially in the part of syntax and types
 		\end{itemize}   
-		\item<3-> Has full dependent types
-			\begin{itemize}
-			\item<3-> Dependent types allow types to be predicated on values.
+		\item Has full dependent types
+		\begin{itemize}
+			\item No restriction on wchich values may appear in types
+			\item Allow a programmer to give a program more precise type
 		\end{itemize}   
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-		\frametitle{Dependent Types}
+\newcommand{\dependentTypes}{Dependent Types - Examples}
+\section{\dependentTypes}
+\label{sec:dependentTypes}
+\begin{frame}[fragile]{\dependentTypes}
+	\begin{block}{Unary natural numbers}
+		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+data Nat = Z | S Nat
+		\end{lstlisting}
+	\end{block}
+	
+	\begin{block}{Lists}
+		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+data List : Type -> Type where
+     Nil  : List a
+	 (::) : a -> List a -> List a		
+		\end{lstlisting}
+	\end{block}
+	
+	\begin{block}{Vectors - Lists with length}
+		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+data Vect : Nat -> Type -> Type where
+	 Nil  : Vect Z a
+	 (::) : a -> Vect k a -> Vect (S k) a	
+		\end{lstlisting}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{\dependentTypes}
+	\begin{block}<1->{takeList}
+		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+takeList : (n : Nat) -> List a -> List a
+takeList Z     list      = []
+takeList (S k) []        = []
+takeList (S k) (x :: xs) = x :: takeList k xs
+		\end{lstlisting}
+	\end{block}
+\begin{block}<2->{takeVect}
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+takeVect : (n : Nat) -> Vect (n + m) elem -> Vect n elem
+takeVect  Z     xs       = []
+takeVect (S k) (x :: xs) = x :: takeVect k xs
+	\end{lstlisting}
+\end{block}
+\end{frame}
+\begin{frame}[fragile]{\dependentTypes}
+	\begin{block}{takeList}
+		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+takeList : (n : Nat) -> List a -> List a
+takeList Z     list      = []
+takeList (S k) []        = []
+takeList (S k) (x :: xs) = x :: takeList k xs
+		\end{lstlisting}
+	\end{block}
+\begin{block}{}
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+*Take> takeList 2 [1,2,3,4]
+[1, 2] : List Integer
+
+*Take> takeList 5 [1,2,3,4]
+[1, 2, 3, 4] : List Integer
+	\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{\dependentTypes}
+	\begin{block}{takeVect}
+		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+takeVect : (n : Nat) -> Vect (n + m) elem -> Vect n elem
+takeVect  Z     xs       = []
+takeVect (S k) (x :: xs) = x :: takeVect k xs
+		\end{lstlisting}
+	\end{block}
+	\begin{block}{}
+		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+*Take> takeVect 2 [1,2,3,4]
+[1, 2] : Vect 2 Integer
+*Take> takeVect 5 [1,2,3,4]
+(input):1:13:When checking argument xs to constructor Data.Vect.:::
+		Type mismatch between
+			Vect 0 elem1 (Type of [])
+		and
+			Vect (S m) elem (Expected type)
+			
+		Specifically:
+			Type mismatch between
+				0
+			and
+				S m
+		\end{lstlisting}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{\dependentTypes}
+	\begin{block}{vAdd}
+		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+vAdd : Num a => Vect n a -> Vect n a -> Vect n a
+vAdd Nil       Nil       = Nil
+vAdd (x :: xs) (y :: ys) = x + y :: vAdd xs ys
+		\end{lstlisting}
+	\end{block}
+\begin{block}{}
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+*vAdd> vAdd [1,2,3] [1,2,3]
+[2, 4, 6] : Vect 3 Integer
+
+*vAdd> vAdd ["a",2,3] [1,2,3]
+String is not a numeric type
+	\end{lstlisting}
+\end{block}
 \end{frame}
 
 \newcommand{\typetheory}{Type theory}
