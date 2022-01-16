@@ -10,7 +10,6 @@
 \usepackage{xcolor}
 \usepackage[beamer]{hf-tikz}
 \usepackage{bussproofs}
-
 \usefonttheme{serif}
 
 %\usepackage{soul}
@@ -88,8 +87,6 @@
 		\setlength\itemsep{1em} 
 		\item Idris is a general purpose functional programming language
 		\begin{itemize}
-			\item Programs are composed of functions
-			\item Program execution consists of the evaluation of functions
 			\item Functions are a first-class language construct
 		\end{itemize}  
 		\item Influenced by Haskell
@@ -118,15 +115,15 @@ data Nat = Z | S Nat
 		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 data List : Type -> Type where
      Nil  : List a
-	 (::) : a -> List a -> List a		
+     (::) : a -> List a -> List a		
 		\end{lstlisting}
 	\end{block}
 	
 	\begin{block}{Vectors - Lists with length}
 		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 data Vect : Nat -> Type -> Type where
-	 Nil  : Vect Z a
-	 (::) : a -> Vect k a -> Vect (S k) a	
+     Nil  : Vect Z a
+     (::) : a -> Vect k a -> Vect (S k) a	
 		\end{lstlisting}
 	\end{block}
 \end{frame}
