@@ -57,6 +57,8 @@ data ATMcmd: (ty: Type) -> ATMState -> (ty -> ATMState) -> Type where
     GetAmount: ATMcmd Nat st (const st)
     Dispense: (amount: Nat) -> ATMcmd () InSession (const InSession)
     Message : String -> ATMcmd () st (const st)
+
+    -- Monad
     Pure : (res: ty) -> ATMcmd ty (st_final res) st_final
     (>>=) : ATMcmd a st1 st2 -> ((res:a) -> ATMcmd b (st2 res) stf) -> ATMcmd b st1 stf
 
@@ -71,7 +73,7 @@ runATM InsertCard = do putStrLn "Please insert your card (press enter)"
                        x <- getLine
                        pure ()
 
-runATM EjectCard = putStrLn "EjectCard"
+runATM EjectCard = putStrLn "Eject card.."
 runATM GetPIN = do putStrLn "Insert PIN: "
                    s <- getLine
                    pure (parsePIN s)
@@ -84,7 +86,7 @@ runATM GetAmount = do putStrLn "How much would you like?  "
                       amount <- getLine
                       pure (cast amount)
 
-runATM (Dispense amount) = putStrLn ("Here is $" ++ show amount)
+runATM (Dispense amount) = putStrLn ("Here is $" ++ show amount ++ ". Bye!")
 runATM (Message msg) = putStrLn msg
 runATM (Pure res) = pure res
 runATM (x >>= f) = do res <- runATM x
@@ -95,6 +97,8 @@ runATM (x >>= f) = do res <- runATM x
 -- ##################
 -- ATM
 -- ##################
+--
+-- To execute program type: ' :exec runATM atm '
 
 atm : ATMcmd () Ready (const Ready)
 atm = do InsertCard

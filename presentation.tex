@@ -60,9 +60,11 @@
 \AtBeginSection[]
 
 \newcommand\Idris{\textsc{Idris}}
+\newcommand{\dsltitle}{Example - Modelling an ATM DSL in Idris}
+\newcommand{\othertitle}{Example - Other}
 
 \title{\Idris, a general-purpose dependently typed programming language: Design and implementation -- Edwin Brady}
-\author{Daniela Ferreiro, Jorge Blázquez, Rafael Fernández, Daniel Trujillo}
+\author{Daniela Ferreiro, Jorge Blázquez, Daniel Trujillo, Rafael Fernández}
 \date{January 18, 2022}
 
 \begin{document}
@@ -384,6 +386,68 @@ vAdd _ _ c ((::) _ _ x xs) ((::) _ _ y ys)
         \end{align*}
     }
     \end{block}
+\end{frame}
+
+%% %%%%%%%%%%%%%
+%% EXAMPLES
+%% %%%%%%%%%%%%%
+
+%% dsl-1
+\begin{frame}[fragile]{\dsltitle}
+An ATM should only dispense cash when a user has inserted their
+card and entered a correct PIN. This is a typical sequence of operations on an ATM:
+\begin{enumerate}
+\item[•] A user inserts their bank card.
+\item[•] The machine prompts the user for their PIN, to check that the user is entitled to
+use the card.
+\item[•] If PIN entry is successful, the machine prompts the user for an amount of
+money, and then dispenses cash. Otherwise, it ejects their bank card.
+\end{enumerate}
+\end{frame}
+
+%%dsl-2
+\begin{frame}[fragile]{\dsltitle}
+A state machine describing the states and operations on an ATM.\\
+\begin{center}
+	\includegraphics[width=\textwidth]{atm-model}
+\end{center}
+\end{frame}
+
+%%dsl-3
+\begin{frame}[fragile]{\dsltitle}
+So in our ATM DSL, can be in one of the following states:
+\begin{enumerate}
+\item[•] \texttt{Ready} — The ATM is ready and waiting for a card to be inserted.
+\item[•] \texttt{CardInserted} — There is a card inside the ATM, but the system has not yet checked a PIN entry against the card.
+\item[•] \texttt{Session} — There is a card inside the ATM and the user has entered a valid PIN for the card, so a validated session is in progress.
+\end{enumerate}
+\begin{center}
+	\includegraphics[scale=0.7]{dsl-code-0}
+\end{center}
+\begin{center}
+	\includegraphics[scale=0.7]{dsl-code-1}
+\end{center}
+\end{frame}
+
+%%dsl-4
+\begin{frame}[fragile]{\dsltitle}
+The machine supports the following basic operations:
+\begin{enumerate}
+\item[•] \texttt{InsertCard} — Waits for a user to insert a card.
+\item[•] \texttt{EjectCard} — Ejects a card from the machine, as long as there’s a card in the machine.
+\item[•] \texttt{GetPIN} — Reads a user’s PIN, as long as there’s a card in the machine.
+\item[•] \texttt{CheckPIN} — Checks whether an entered PIN is valid.
+\item[•] \texttt{Dispense} — Dispenses cash as long as there’s a validated card in the machine.
+\item[•] \texttt{Message} — Displays a message to the user.
+\end{enumerate}
+\end{frame}
+
+%%dsl-5
+\begin{frame}[fragile]{\dsltitle}
+The machine supports the following basic operations:
+\begin{center}
+	\includegraphics[width=\textwidth]{dsl-code-2}
+\end{center}
 \end{frame}
 
 \end{document}
