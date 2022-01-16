@@ -389,6 +389,89 @@ vAdd _ _ c ((::) _ _ x xs) ((::) _ _ y ys)
 %% EXAMPLES
 %% %%%%%%%%%%%%%
 
+%% Words example
+
+\begin{frame}[fragile]{Example: Words}
+	
+	\begin{block}<only@1>{Data type}
+		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+data WordN : (n : Nat) -> Type where
+	MkWord : Int -> WordN k
+		\end{lstlisting}
+	\end{block}
+	\begin{block}<only@1>{Show}
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+show : {n : Nat} -> WordN n -> String
+show w = "w" ++ (show $ numBits w) ++ "=" ++ (show $ toInt w)
+		\end{lstlisting}
+	\end{block}
+	\begin{block}<only@1>{Type level}
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+incBits : WordN n -> WordN (S n)
+incBits (MkWord i) = MkWord i
+		\end{lstlisting}
+	\end{block}
+	
+	
+	\begin{block}<only@2>{Types and values}
+		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+BitsPerWord : Nat
+BitsPerWord = 8
+
+Word : Type
+Word = WordN BitsPerWord
+
+accum : Word
+accum = MkWord 255 -- w(8)=255
+
+DoubleWord : Type
+DoubleWord = WordN (BitsPerWord * 2)
+
+hl : DoubleWord
+hl = MkWord 300 -- w(16)=300
+		\end{lstlisting}
+	\end{block}
+
+	
+	\begin{block}<only@3>{Functions}
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+add : WordN n -> WordN n -> WordN (S n)
+add (MkWord a) (MkWord b) = MkWord (a + b)
+
+inc : WordN n -> WordN n
+inc (MkWord a) = MkWord (a + 1)
+
+show $ inc accum	-- w(8)=0
+show $ inc hl		-- w(16)=301
+show $ add accum hl	-- Error
+	\end{lstlisting}
+	\end{block}
+
+\end{frame}
+
+% Example Liquid Haskell
+
+\begin{frame}[fragile]{Refined types are not dependent types!}
+
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+{-@ type Word3 = {v:Int | v < 8} @-}
+
+{-@ accum :: Word3 @-}
+accum :: Int
+accum = 7
+
+{-@ inc :: Word3 -> Word3 @-}
+inc :: Int -> Int
+inc w = (w + 1) `mod` 8
+
+{-@ dec :: Word3 -> Word3 @-}
+dec :: Int -> Int
+dec 0 = 7
+dec w = w - 1
+	\end{lstlisting}
+
+\end{frame}
+
 %% dsl-1
 \begin{frame}[fragile]{\dsltitle}
 An ATM should only dispense cash when a user has inserted their
