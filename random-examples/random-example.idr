@@ -3,25 +3,37 @@
 -- Random Example
 -- ##################
 
-data ATMState = Ready | CardInserted | InSession
+data State = Hungry | Coding | Chill
 
-data AL : String -> ATMState -> Type where
-        FOO: AL "a" Ready
-        BAR: Nat -> AL s CardInserted
-        ZZUP: AL "b" InSession
+data MOOD : State -> String -> Type where
+        ZZUP: MOOD Coding "idris"
+        FOO: MOOD Hungry s
+        BAR: Nat -> MOOD Chill s
+        
+-- ##################################
+-- ##################################
 
-foo : AL "a" Ready
-foo = FOO
-
-zzup : AL "b" InSession
+-- Singleton
+zzup : MOOD Coding "idris"
 zzup = ZZUP
 
-paco : AL "" CardInserted
+-- Different dependent types, same constructor
+foo : MOOD Hungry "pizza"
+foo = FOO
+
+foo' : MOOD Hungry "apple"
+foo' = FOO
+
+-- ##################################
+-- Same type but not same constructor
+
+paco : MOOD Chill "netflix"
 paco = BAR 0
 
-pacoMultiVerse : AL "" CardInserted
+pacoMultiVerse : MOOD Chill "netflix"
 pacoMultiVerse = BAR 1
 
-juan : AL "k kiere" CardInserted
+-- Different dependent types, same constructor
+juan : MOOD Chill "music"
 juan = BAR 0
 
