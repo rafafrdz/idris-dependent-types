@@ -409,7 +409,7 @@ money, and then dispenses cash. Otherwise, it ejects their bank card.
 \begin{frame}[fragile]{\dsltitle}
 A state machine describing the states and operations on an ATM.\\
 \begin{center}
-	\includegraphics[width=\textwidth]{atm-model}
+	\includegraphics[scale=0.5]{atm-model}
 \end{center}
 \end{frame}
 
@@ -448,6 +448,40 @@ The machine supports the following basic operations:
 \begin{center}
 	\includegraphics[width=\textwidth]{dsl-code-2}
 \end{center}
+\end{frame}
+
+%%dsl-6
+\begin{frame}[fragile]{\dsltitle}
+The machine supports the following basic operations:
+\begin{center}
+	\includegraphics[width=\textwidth]{dsl-code-3}
+\end{center}
+\end{frame}
+
+%%dsl-7
+\begin{frame}[fragile]{\dsltitle}
+Its interpreter (part.I)
+\begin{center}
+	\includegraphics[width=\textwidth]{dsl-code-4_1}
+\end{center}
+\end{frame}
+
+%%dsl-8
+\begin{frame}[fragile]{\dsltitle}
+Its interpreter (part.II)
+\begin{center}
+	\includegraphics[width=\textwidth]{dsl-code-4_2}
+\end{center}
+\end{frame}
+
+%%dsl-9
+\begin{frame}[fragile]{\dsltitle}
+The program. In order to execute it, we have to type in the promt:\\
+\texttt{:exec runATM atm}
+\begin{figure}
+	\raggedright
+  \includegraphics[scale=0.5]{dsl-code-5}
+\end{figure}
 \end{frame}
 
 \end{document}
