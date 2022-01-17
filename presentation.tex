@@ -59,8 +59,8 @@
 \AtBeginSection[]
 
 \newcommand\Idris{\textsc{Idris}}
-\newcommand{\dsltitle}{Example - Modelling an ATM DSL in Idris}
-\newcommand{\othertitle}{Example - Other}
+\newcommand{\dsltitle}{Example : Modelling an ATM DSL in Idris}
+\newcommand{\othertitle}{Example : Other}
 
 \title{\Idris, a general-purpose dependently typed programming language: Design and implementation -- Edwin Brady}
 \author{Daniela Ferreiro, Jorge Blázquez, Daniel Trujillo, Rafael Fernández}
@@ -101,10 +101,10 @@
 	\end{itemize}
 \end{frame}
 
-\newcommand{\dependentTypes}{Dependent Types - Examples}
+\newcommand{\dependentTypes}{Dependent Types}
 \section{\dependentTypes}
 \label{sec:dependentTypes}
-\begin{frame}[fragile]{\dependentTypes}
+\begin{frame}[fragile]{Dependent Types - Examples}
 	\begin{block}{Unary natural numbers}
 		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 data Nat = Z | S Nat
@@ -128,7 +128,7 @@ data Vect : Nat -> Type -> Type where
 	\end{block}
 \end{frame}
 
-\begin{frame}[fragile]{\dependentTypes}
+\begin{frame}[fragile]{Dependent Types - Examples}
 	\begin{block}<1->{takeList}
 		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 takeList : (n : Nat) -> List a -> List a
@@ -145,7 +145,7 @@ takeVect (S k) (x :: xs) = x :: takeVect k xs
 	\end{lstlisting}
 \end{block}
 \end{frame}
-\begin{frame}[fragile]{\dependentTypes}
+\begin{frame}[fragile]{Dependent Types - Examples}
 	\begin{block}{takeList}
 		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 takeList : (n : Nat) -> List a -> List a
@@ -165,7 +165,7 @@ takeList (S k) (x :: xs) = x :: takeList k xs
 \end{block}
 \end{frame}
 
-\begin{frame}[fragile]{\dependentTypes}
+\begin{frame}[fragile]{Dependent Types - Examples}
 	\begin{block}{takeVect}
 		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 takeVect : (n : Nat) -> Vect (n + m) elem -> Vect n elem
@@ -193,7 +193,7 @@ takeVect (S k) (x :: xs) = x :: takeVect k xs
 	\end{block}
 \end{frame}
 
-\begin{frame}[fragile]{\dependentTypes}
+\begin{frame}[fragile]{Dependent Types - Examples}
 	\begin{block}{vAdd}
 		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 vAdd : Num a => Vect n a -> Vect n a -> Vect n a
@@ -390,8 +390,9 @@ vAdd _ _ c ((::) _ _ x xs) ((::) _ _ y ys)
 %% %%%%%%%%%%%%%
 
 %% Words example
-
-\begin{frame}[fragile]{Example: Words}
+\section{More examples}
+\subsection{Example : Words}
+\begin{frame}[fragile]{Example : Words}
 	
 	\begin{block}<only@1>{Data type}
 		\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
@@ -473,6 +474,7 @@ dec w = w - 1
 \end{frame}
 
 %% dsl-1
+\subsection{\dsltitle}
 \begin{frame}[fragile]{\dsltitle}
 An ATM should only dispense cash when a user has inserted their
 card and entered a correct PIN. This is a typical sequence of operations on an ATM:
