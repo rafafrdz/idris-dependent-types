@@ -86,13 +86,14 @@
 	\begin{itemize}
 		\setlength\itemsep{1em} 
 		\item Idris is a general purpose functional programming language
+ 
 		\item Influenced by Haskell
 		\begin{itemize}
 			\item Especially in the part of syntax and types
 		\end{itemize}   
 		\item Has full dependent types
 		\begin{itemize}
-			\item No restriction on wchich values may appear in types
+			\item No restriction on which values may appear in types
 			\item Allow a programmer to give a program more precise type
 		\end{itemize}   
 	\end{itemize}
@@ -102,13 +103,8 @@
 \section{\dependentTypes}
 \label{sec:dependentTypes}
 \begin{frame}[fragile]{Dependent Types - Examples}
-	\begin{block}{Unary natural numbers}
-		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
-data Nat = Z | S Nat
-		\end{lstlisting}
-	\end{block}
 	
-	\begin{block}{Lists}
+	\begin{block}<1->{Lists}
 		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 data List : Type -> Type where
      Nil  : List a
@@ -116,7 +112,7 @@ data List : Type -> Type where
 		\end{lstlisting}
 	\end{block}
 	
-	\begin{block}{Vectors - Lists with length}
+	\begin{block}<2->{Vectors - Lists with length}
 		 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 data Vect : Nat -> Type -> Type where
      Nil  : Vect Z a
