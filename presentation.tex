@@ -130,11 +130,13 @@ takeList (S k) []        = []
 takeList (S k) (x :: xs) = x :: takeList k xs
 		\end{lstlisting}
 	\end{block}
-\begin{block}<2->{takeVect}
+\begin{block}<2->{}
 	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
-takeVect : (n : Nat) -> Vect (n + m) elem -> Vect n elem
-takeVect  Z     xs       = []
-takeVect (S k) (x :: xs) = x :: takeVect k xs
+*Take> takeList 2 [1,2,3,4]
+[1, 2] : List Integer
+		
+*Take> takeList 5 [1,2,3,4]
+[1, 2, 3, 4] : List Integer
 	\end{lstlisting}
 \end{block}
 \end{frame}
@@ -147,13 +149,11 @@ takeList (S k) []        = []
 takeList (S k) (x :: xs) = x :: takeList k xs
 		\end{lstlisting}
 	\end{block}
-\begin{block}{}
+\begin{block}{takeVect}
 	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
-*Take> takeList 2 [1,2,3,4]
-[1, 2] : List Integer
-
-*Take> takeList 5 [1,2,3,4]
-[1, 2, 3, 4] : List Integer
+takeVect : (n : Nat) -> Vect (n + m) elem -> Vect n elem
+takeVect  Z     xs       = []
+takeVect (S k) (x :: xs) = x :: takeVect k xs
 	\end{lstlisting}
 \end{block}
 \end{frame}
