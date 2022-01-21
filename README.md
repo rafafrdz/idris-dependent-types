@@ -1,3 +1,4 @@
+![Idris](https://raw.githubusercontent.com/rafafrdz/idris-dependent-types/main/pics/idris.png)
 # Idris and Dependent Types
 This is a briefly introduction to dependent types in Idris. In this project, we have to explain how idris and its type checker works, and how types rules are defined.
 
