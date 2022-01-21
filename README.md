@@ -5,7 +5,11 @@ Moreover, we show some examples where we try to clarify all this theory.
 
 ## Doc.
 [1] - https://www.idris-lang.org/pages/documentation.html
+
 [2] - https://idris2.readthedocs.io/en/latest/tutorial/index.html
+
 [3] - https://www.type-driven.org.uk/edwinb/papers/impldtp.pdf
+
 [4] - https://www.davidchristiansen.dk/pubs/dependent-type-providers.pdf
+
 [5] - https://www.type-driven.org.uk/edwinb/papers/effects.pdf
