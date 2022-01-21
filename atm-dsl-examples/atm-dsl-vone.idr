@@ -53,6 +53,7 @@ data ATMcmd: (ty: Type) -> ATMState -> ATMState -> Type where
     CheckPIN: (p:PIN) -> ATMcmd PINCheck CardInserted (Main.chkPIN (Main.isCorrect p))
     GetAmount: ATMcmd Nat st st
     Dispense: (amount: Nat) -> ATMcmd () InSession InSession
+    
 
 readPIN : IO PIN
 readPIN = do s <- getLine
